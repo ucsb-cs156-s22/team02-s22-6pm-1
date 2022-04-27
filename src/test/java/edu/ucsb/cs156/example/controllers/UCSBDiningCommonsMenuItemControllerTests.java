@@ -236,39 +236,31 @@ public class UCSBDiningCommonsMenuItemControllerTests extends ControllerTestCase
                 Map<String, Object> json = responseToJson(response);
                 assertEquals("UCSBDiningCommons with id munger-hall not found", json.get("message"));
         }
-
+        */
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
-        public void admin_can_edit_an_existing_commons() throws Exception {
+        public void admin_can_edit_an_existing_menu_item() throws Exception {
                 // arrange
 
-                UCSBDiningCommons carrilloOrig = UCSBDiningCommons.builder()
-                                .name("Carrillo")
-                                .code("carrillo")
-                                .hasSackMeal(false)
-                                .hasTakeOutMeal(false)
-                                .hasDiningCam(true)
-                                .latitude(34.409953)
-                                .longitude(-119.85277)
+                UCSBDiningCommonsMenuItem menuitem_orig = UCSBDiningCommonsMenuItem.builder()
+                                .name("Mac n Cheese Pizza")
+                                .diningCommonsCode("DLG")
+                                .station("Pizza corner")
                                 .build();
 
-                UCSBDiningCommons carrilloEdited = UCSBDiningCommons.builder()
-                                .name("Carrillo Dining Hall")
-                                .code("carrillo")
-                                .hasSackMeal(true)
-                                .hasTakeOutMeal(true)
-                                .hasDiningCam(false)
-                                .latitude(34.409954)
-                                .longitude(-119.85278)
+                UCSBDiningCommonsMenuItem menuitem_edit = UCSBDiningCommonsMenuItem.builder()
+                                .name("Taco Pizza")
+                                .diningCommonsCode("DLG")
+                                .station("Pizza corner")
                                 .build();
 
-                String requestBody = mapper.writeValueAsString(carrilloEdited);
+                String requestBody = mapper.writeValueAsString(menuitem_edit);
 
-                when(ucsbDiningCommonsRepository.findById(eq("carrillo"))).thenReturn(Optional.of(carrilloOrig));
+                when(ucsbDiningCommonsMenuItemRepository.findById(eq(1L))).thenReturn(Optional.of(menuitem_orig));
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/ucsbdiningcommons?code=carrillo")
+                                put("/api/UCSBDiningCommonsMenuItem?id=1")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -276,34 +268,30 @@ public class UCSBDiningCommonsMenuItemControllerTests extends ControllerTestCase
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
-                verify(ucsbDiningCommonsRepository, times(1)).findById("carrillo");
-                verify(ucsbDiningCommonsRepository, times(1)).save(carrilloEdited); // should be saved with updated info
+                verify(ucsbDiningCommonsMenuItemRepository, times(1)).findById(1L);
+                verify(ucsbDiningCommonsMenuItemRepository, times(1)).save(menuitem_edit); // should be saved with updated info
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(requestBody, responseString);
         }
 
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
-        public void admin_cannot_edit_commons_that_does_not_exist() throws Exception {
+        public void admin_cannot_edit_menu_item_that_does_not_exist() throws Exception {
                 // arrange
 
-                UCSBDiningCommons editedCommons = UCSBDiningCommons.builder()
-                                .name("Munger Hall")
-                                .code("munger-hall")
-                                .hasSackMeal(false)
-                                .hasTakeOutMeal(false)
-                                .hasDiningCam(true)
-                                .latitude(34.420799)
-                                .longitude(-119.852617)
+                UCSBDiningCommonsMenuItem editedMenuItem = UCSBDiningCommonsMenuItem.builder()
+                                .name("Mac n Cheese Pizza")
+                                .diningCommonsCode("DLG")
+                                .station("Pizza corner")
                                 .build();
 
-                String requestBody = mapper.writeValueAsString(editedCommons);
+                String requestBody = mapper.writeValueAsString(editedMenuItem);
 
-                when(ucsbDiningCommonsRepository.findById(eq("munger-hall"))).thenReturn(Optional.empty());
+                when(ucsbDiningCommonsMenuItemRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/ucsbdiningcommons?code=munger-hall")
+                                put("/api/UCSBDiningCommonsMenuItem?id=1")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -311,10 +299,9 @@ public class UCSBDiningCommonsMenuItemControllerTests extends ControllerTestCase
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
-                verify(ucsbDiningCommonsRepository, times(1)).findById("munger-hall");
+                verify(ucsbDiningCommonsMenuItemRepository, times(1)).findById(1L);
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("UCSBDiningCommons with id munger-hall not found", json.get("message"));
+                assertEquals("UCSBDiningCommonsMenuItem with id 1 not found", json.get("message"));
 
         }
-        */
 }
