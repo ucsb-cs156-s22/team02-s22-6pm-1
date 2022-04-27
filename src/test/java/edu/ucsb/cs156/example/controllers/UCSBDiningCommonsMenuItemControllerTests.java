@@ -191,7 +191,7 @@ public class UCSBDiningCommonsMenuItemControllerTests extends ControllerTestCase
         public void admin_can_delete_a_menu_item() throws Exception {
                 // arrange
 
-                UCSBDiningCommonsMenuItem menuitem = UCSBDiningCommons.builder()
+                UCSBDiningCommonsMenuItem menuitem = UCSBDiningCommonsMenuItem.builder()
                                 .name("Mac n Cheese Pizza")
                                 .diningCommonsCode("DLG")
                                 .station("Pizza corner")
