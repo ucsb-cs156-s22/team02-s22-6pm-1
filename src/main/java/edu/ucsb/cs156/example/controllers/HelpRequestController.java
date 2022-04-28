@@ -85,7 +85,7 @@ public class HelpRequestController extends ApiController {
         return savedHelpRequest;
     }
 
-    @ApiOperation(value = "Delete a HelpRequest")
+    @ApiOperation(value = "Delete a request")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
     public Object deleteHelpRequest(
@@ -97,7 +97,7 @@ public class HelpRequestController extends ApiController {
         return genericMessage("HelpRequest with id %s deleted".formatted(id));
     }
 
-    @ApiOperation(value = "Update a single date")
+    @ApiOperation(value = "Update a single request")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
     public HelpRequest updateHelpRequest(
