@@ -93,26 +93,26 @@ public class RecommendationController extends ApiController {
     //     return genericMessage("Recommendation with id %s deleted".formatted(id));
     // }
 
-    // @ApiOperation(value = "Update a single recommendation")
-    // @PreAuthorize("hasRole('ROLE_ADMIN')")
-    // @PutMapping("")
-    // public Recommendation updateCommons(
-    //         @ApiParam("id") @RequestParam Long id,
-    //         @RequestBody @Valid Recommendation incoming) {
+    @ApiOperation(value = "Update a single recommendation")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public Recommendation updateRecommendation(
+            @ApiParam("id") @RequestParam Long id,
+            @RequestBody @Valid Recommendation incoming) {
 
-    //     Recommendation recommendation = recommendationRepository.findById(id)
-    //             .orElseThrow(() -> new EntityNotFoundException(Recommendation.class, id));
+        Recommendation recommendation = recommendationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Recommendation.class, id));
 
 
-    //     recommendation.setRequesterEmail(incoming.getRequesterEmail());  
-    //     recommendation.setProfessorEmail(incoming.getProfessorEmail());
-    //     recommendation.setExplanation(incoming.getExplanation());
-    //     recommendation.setDateRequested(incoming.getDateRequested());
-    //     recommendation.setDateNeeded(incoming.getDateNeeded());
-    //     recommendation.setDone(incoming.getDone());
+        recommendation.setRequesterEmail(incoming.getRequesterEmail());  
+        recommendation.setProfessorEmail(incoming.getProfessorEmail());
+        recommendation.setExplanation(incoming.getExplanation());
+        recommendation.setDateRequested(incoming.getDateRequested());
+        recommendation.setDateNeeded(incoming.getDateNeeded());
+        recommendation.setDone(incoming.getDone());
 
-    //     recommendationRepository.save(recommendation);
+        recommendationRepository.save(recommendation);
 
-    //     return recommendation;
-    // }
+        return recommendation;
+    }
 }
