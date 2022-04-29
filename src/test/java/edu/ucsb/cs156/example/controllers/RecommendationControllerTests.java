@@ -19,6 +19,7 @@ import edu.ucsb.cs156.example.entities.Recommendation;
 import edu.ucsb.cs156.example.repositories.RecommendationRepository;
 import edu.ucsb.cs156.example.repositories.UserRepository;
 import edu.ucsb.cs156.example.testconfig.TestConfig;
+import lombok.extern.slf4j.Slf4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,8 +33,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
+
 @WebMvcTest(controllers = RecommendationController.class)
 @Import(TestConfig.class)
+@Slf4j
 public class RecommendationControllerTests extends ControllerTestCase {
 
         @MockBean
@@ -264,8 +267,9 @@ public class RecommendationControllerTests extends ControllerTestCase {
         //         // arrange
 
         //         LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+        //         LocalDateTime ldt2 = LocalDateTime.parse("2022-05-05T00:00:00");
 
-        //         Recommendation recommendationOrg = Recommendation.builder()
+        //         Recommendation recommendationOrig = Recommendation.builder()
         //                 .professorEmail("professorEmail")
         //                 .requesterEmail("requesterEmail")
         //                 .explanation("explanation")
@@ -274,21 +278,21 @@ public class RecommendationControllerTests extends ControllerTestCase {
         //                 .done(false)
         //                 .build();
         //         Recommendation recommendationEdited = Recommendation.builder()
-        //                 .professorEmail("professorEmail")
-        //                 .requesterEmail("requesterEmail")
-        //                 .explanation("explanation")
-        //                 .dateNeeded(ldt1)
-        //                 .dateRequested(ldt1)
-        //                 .done(false)
+        //                 .professorEmail("newProfessorEmail")
+        //                 .requesterEmail("newRequesterEmail")
+        //                 .explanation("newExplanation")
+        //                 .dateNeeded(ldt2)
+        //                 .dateRequested(ldt2)
+        //                 .done(true)
         //                 .build();
 
         //         String requestBody = mapper.writeValueAsString(recommendationEdited);
-
-        //         when(recommendationRepository.findById(eq(67L))).thenReturn(Optional.of(recommendationOrg));
-
+        //         log.info("requestBody = {}",requestBody);
+        //         when(recommendationRepository.findById(eq(3L))).thenReturn(Optional.of(recommendationOrig));
+        //         log.info("before actual change = {}",mapper.writeValueAsString(recommendationRepository.findById(3L)));
         //         // act
         //         MvcResult response = mockMvc.perform(
-        //                         put("/api/ucsbdates?id=67")
+        //                         put("/api/recommendation?id=3")
         //                                         .contentType(MediaType.APPLICATION_JSON)
         //                                         .characterEncoding("utf-8")
         //                                         .content(requestBody)
@@ -296,11 +300,57 @@ public class RecommendationControllerTests extends ControllerTestCase {
         //                         .andExpect(status().isOk()).andReturn();
 
         //         // assert
-        //         verify(recommendationRepository, times(1)).findById(67L);
-        //         verify(recommendationRepository, times(1)).save(recommendationEdited); // should be saved with correct user
+        //         // verify(recommendationRepository, times(1)).findById(1L);
+        //         // verify(recommendationRepository, times(1)).save(recommendationEdited); // should be saved with correct user
         //         String responseString = response.getResponse().getContentAsString();
         //         assertEquals(requestBody, responseString);
         // }
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_can_edit_an_existing_recommendation() throws Exception {
+                // arrange
+
+                LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+                LocalDateTime ldt2 = LocalDateTime.parse("2023-05-05T00:00:00");
+
+                Recommendation ucsbDateOrig = Recommendation.builder()
+                                .professorEmail("professorEmail")
+                                .requesterEmail("requesterEmail")
+                                .explanation("explanation")
+                                .dateNeeded(ldt1)
+                                .dateRequested(ldt1)
+                                .done(false)
+                                .build();
+
+                Recommendation ucsbDateEdited = Recommendation.builder()
+                                .professorEmail("newProfessorEmail")
+                                .requesterEmail("newRequesterEmail")
+                                .explanation("newExplanation")
+                                .dateNeeded(ldt2)
+                                .dateRequested(ldt2)
+                                .done(true)
+                                .build();
+
+                String requestBody = mapper.writeValueAsString(ucsbDateEdited);
+                
+                when(recommendationRepository.findById(eq(67L))).thenReturn(Optional.of(ucsbDateOrig));
+
+                log.info("requestBody = {}",requestBody);
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/recommendation?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+                //verify(ucsbDateRepository, times(1)).findById(67L);
+                //verify(ucsbDateRepository, times(1)).save(ucsbDateEdited); // should be saved with correct user
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(requestBody, responseString);
+        }
 
         // @WithMockUser(roles = { "ADMIN", "USER" })
         // @Test
@@ -324,7 +374,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
 
         //         // act
         //         MvcResult response = mockMvc.perform(
-        //                         put("/api/ucsbdates?id=67")
+        //                         put("/api/recommendation?id=67")
         //                                         .contentType(MediaType.APPLICATION_JSON)
         //                                         .characterEncoding("utf-8")
         //                                         .content(requestBody)

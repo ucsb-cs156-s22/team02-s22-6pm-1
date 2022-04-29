@@ -99,20 +99,20 @@ public class RecommendationController extends ApiController {
     public Recommendation updateRecommendation(
             @ApiParam("id") @RequestParam Long id,
             @RequestBody @Valid Recommendation incoming) {
-
+        log.info("incoming = {}", incoming);
         Recommendation recommendation = recommendationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Recommendation.class, id));
 
-
+        log.info("recommendation = {}", recommendation);
         recommendation.setRequesterEmail(incoming.getRequesterEmail());  
         recommendation.setProfessorEmail(incoming.getProfessorEmail());
         recommendation.setExplanation(incoming.getExplanation());
         recommendation.setDateRequested(incoming.getDateRequested());
         recommendation.setDateNeeded(incoming.getDateNeeded());
         recommendation.setDone(incoming.getDone());
-
+        log.info("recommendation after = {}", recommendation);
         recommendationRepository.save(recommendation);
 
         return recommendation;
     }
-}
+}  
