@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 
 @Api(description = "Recommendation")
-@RequestMapping("/api/recommendation")
+@RequestMapping("/api/Recommendation")
 @RestController
 @Slf4j
 public class RecommendationController extends ApiController {
@@ -101,18 +101,16 @@ public class RecommendationController extends ApiController {
             @ApiParam("id") @RequestParam Long id,
             @RequestBody @Valid Recommendation incoming) {
 
-        log.info("incoming = {}", incoming);
         Recommendation recommendation = recommendationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Recommendation.class, id));
 
-        log.info("recommendation = {}", recommendation);
+
         recommendation.setRequesterEmail(incoming.getRequesterEmail());  
         recommendation.setProfessorEmail(incoming.getProfessorEmail());
         recommendation.setExplanation(incoming.getExplanation());
         recommendation.setDateRequested(incoming.getDateRequested());
         recommendation.setDateNeeded(incoming.getDateNeeded());
         recommendation.setDone(incoming.getDone());
-        log.info("recommendation after = {}", recommendation);
         recommendationRepository.save(recommendation);
 
         return recommendation;
