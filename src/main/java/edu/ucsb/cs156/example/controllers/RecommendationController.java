@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 import edu.ucsb.cs156.example.entities.Recommendation;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
@@ -21,7 +23,6 @@ import edu.ucsb.cs156.example.repositories.RecommendationRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 
 @Api(description = "Recommendation")
@@ -81,17 +82,17 @@ public class RecommendationController extends ApiController {
         return savedRecommendation;
     }
 
-    // @ApiOperation(value = "Delete a Recommendation")
-    // @PreAuthorize("hasRole('ROLE_ADMIN')")
-    // @DeleteMapping("")
-    // public Object deleteRecommendation(
-    //         @ApiParam("id") @RequestParam Long id) {
-    //     Recommendation recommendation = recommendationRepository.findById(id)
-    //             .orElseThrow(() -> new EntityNotFoundException(Recommendation.class, id));
+    @ApiOperation(value = "Delete a Recommendation")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteRecommendation(
+            @ApiParam("id") @RequestParam Long id) {
+        Recommendation recommendation = recommendationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Recommendation.class, id));
 
-    //     recommendationRepository.delete(recommendation);
-    //     return genericMessage("Recommendation with id %s deleted".formatted(id));
-    // }
+        recommendationRepository.delete(recommendation);
+        return genericMessage("Recommendation with id %s deleted".formatted(id));
+    }
 
     @ApiOperation(value = "Update a single recommendation")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -99,6 +100,7 @@ public class RecommendationController extends ApiController {
     public Recommendation updateRecommendation(
             @ApiParam("id") @RequestParam Long id,
             @RequestBody @Valid Recommendation incoming) {
+
         log.info("incoming = {}", incoming);
         Recommendation recommendation = recommendationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Recommendation.class, id));
