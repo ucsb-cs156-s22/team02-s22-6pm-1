@@ -45,40 +45,40 @@ public class RecommendationControllerTests extends ControllerTestCase {
         @MockBean
         UserRepository userRepository;
 
-        // Authorization tests for /api/recommendation/admin/all
+        // Authorization tests for /api/Recommendation/admin/all
 
         @Test
         public void logged_out_users_cannot_get_all() throws Exception {
-                mockMvc.perform(get("/api/recommendation/all"))
+                mockMvc.perform(get("/api/Recommendation/all"))
                                 .andExpect(status().is(403)); // logged out users can't get all
         }
 
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_users_can_get_all() throws Exception {
-                mockMvc.perform(get("/api/recommendation/all"))
+                mockMvc.perform(get("/api/Recommendation/all"))
                                 .andExpect(status().is(200)); // logged
         }
 
         @Test
         public void logged_out_users_cannot_get_by_id() throws Exception {
-                mockMvc.perform(get("/api/recommendation?id=7"))
+                mockMvc.perform(get("/api/Recommendation?id=7"))
                                 .andExpect(status().is(403)); // logged out users can't get by id
         }
 
-        // Authorization tests for /api/ucsbdates/post
+        // Authorization tests for /api/Recommendation/post
         // (Perhaps should also have these for put and delete)
 
         @Test
         public void logged_out_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/recommendation/post"))
+                mockMvc.perform(post("/api/Recommendation/post"))
                                 .andExpect(status().is(403));
         }
 
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_regular_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/recommendation/post"))
+                mockMvc.perform(post("/api/Recommendation/post"))
                                 .andExpect(status().is(403)); // only admins can post
         }
 
@@ -103,7 +103,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
                 when(recommendationRepository.findById(eq(7L))).thenReturn(Optional.of(recommendation));
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/recommendation?id=7"))
+                MvcResult response = mockMvc.perform(get("/api/Recommendation?id=7"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
@@ -123,7 +123,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
                 when(recommendationRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/recommendation?id=7"))
+                MvcResult response = mockMvc.perform(get("/api/Recommendation?id=7"))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
@@ -167,7 +167,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
                 when(recommendationRepository.findAll()).thenReturn(expectedDates);
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/recommendation/all"))
+                MvcResult response = mockMvc.perform(get("/api/Recommendation/all"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
@@ -198,7 +198,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/recommendation/post?professorEmail=professorEmail&requesterEmail=requesterEmail&explanation=explanation&dateNeeded=2022-01-03T00:00:00&dateRequested=2022-01-03T00:00:00&done=false")
+                                post("/api/Recommendation/post?professorEmail=professorEmail&requesterEmail=requesterEmail&explanation=explanation&dateNeeded=2022-01-03T00:00:00&dateRequested=2022-01-03T00:00:00&done=false")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -229,7 +229,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/recommendation?id=15")
+                                delete("/api/Recommendation?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -251,7 +251,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/recommendation?id=15")
+                                delete("/api/Recommendation?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isNotFound()).andReturn();
 
@@ -294,7 +294,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
                 log.info("requestBody = {}",requestBody);
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/recommendation?id=67")
+                                put("/api/Recommendation?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -330,7 +330,7 @@ public class RecommendationControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/recommendation?id=67")
+                                put("/api/Recommendation?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
