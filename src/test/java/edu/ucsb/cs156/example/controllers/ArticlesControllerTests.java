@@ -21,6 +21,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 
 import java.util.Optional;
@@ -34,6 +38,7 @@ import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = ArticlesController.class)
 @Import(TestConfig.class)
+@Slf4j
 public class ArticlesControllerTests extends ControllerTestCase {
 
         @MockBean
@@ -174,7 +179,7 @@ public class ArticlesControllerTests extends ControllerTestCase {
 
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
-        public void an_admin_user_can_post_a_new_ucsbdate() throws Exception {
+        public void an_admin_user_can_post_a_new_article() throws Exception {
                 // arrange
 
                 LocalDateTime ldt1 = LocalDateTime.parse("2022-04-20T00:00:00");
@@ -199,6 +204,8 @@ public class ArticlesControllerTests extends ControllerTestCase {
                 verify(articlesRepository, times(1)).save(articles1);
                 String expectedJson = mapper.writeValueAsString(articles1);
                 String responseString = response.getResponse().getContentAsString();
+                log.info("built={}", expectedJson);
+                log.info("resopnse={}", responseString);
                 assertEquals(expectedJson, responseString);
         }
 
